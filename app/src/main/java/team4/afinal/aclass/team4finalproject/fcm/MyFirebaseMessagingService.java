@@ -47,9 +47,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Map<String, String> data = remoteMessage.getData();
-        String title = data.get("title");
-        String message =data.get("content");
-        String notiType = data.get("notiType");
+        final String title = data.get("title");
+        final String message =data.get("content");
+        final String notiType = data.get("notiType");
         String cate = data.get("cate");
         String exchId = data.get("exchId");
 
@@ -57,22 +57,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if(cate!=null && exchId!=null) {
             DatabaseReference exchange = mDatabase.getReference().child("exchange").child(cate).child(exchId);
-            if (exchange != null) {
-                exchange.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        exchangeBean = dataSnapshot.getValue(ExchangeBean.class);
+            exchange.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    exchangeBean = dataSnapshot.getValue(ExchangeBean.class);
 
-                        notiAlarm(title, message, notiType);
-                    }
+                    notiAlarm(title, message, notiType);
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
-            }
-            } else {
+                }
+            });
+        } else {
             notiAlarm(title, message, notiType);
         }
 
@@ -91,7 +89,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel mChannel =
                     new NotificationChannel(channelId, channelName, importance);
-            notiMng.createNotificationChannel(mChannel);
+          //  notiMng.createNotificationChannel(mChannel);
         }
 
         //다이얼로그 생성하듯이 빌더를 통해서 노티를 생성한다.
@@ -131,6 +129,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // 10개이상 쌓이면
         // + 로 표시된다.
 
-        notiMng.notify(requestID, noti);
+       // notiMng.notify(requestID, noti);
     }
 }
